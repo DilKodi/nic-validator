@@ -1,0 +1,9 @@
+# Sri Lankan NIC Validator - Requirements
+# This project uses only Python standard library
+# No external dependencies required
+
+# Python version: 3.7+
+
+# Optional: If you want to add visualization or enhanced features later
+# matplotlib>=3.5.0  # For state diagram visualization
+# graphviz>=0.20     # For automata graph generation
