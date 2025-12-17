@@ -15,14 +15,14 @@ def get_comprehensive_test_cases():
     
     test_cases = [
         # ===== VALID OLD FORMAT (9 digits + V) =====
-        ("199812345V", True, "Valid old format - Male, 1998, day 123"),
+        ("981234567V", True, "Valid old format - Male, 1998, day 123"),
         ("955201234V", True, "Valid old format - Female, 1995, day 520"),
-        ("200156789V", True, "Valid old format - Male, 2001, day 567"),
+        ("010156789V", True, "Valid old format - Male, 2001, day 015"),
         ("856782345V", True, "Valid old format - Female, 1985, day 678"),
         ("750012345V", True, "Valid old format - Male, 1975, day 001"),
         ("983661234V", True, "Valid old format - Female, 1998, day 866"),
         ("000123456V", True, "Valid old format - Male, 2000, day 123"),
-        ("255001234V", True, "Valid old format - Female, 2025, day 500"),
+        ("255011234V", True, "Valid old format - Female, 2025, day 501"),
         
         # ===== VALID NEW FORMAT (12 digits) =====
         ("199801234567", True, "Valid new format - Male, 1998, day 012"),
@@ -63,11 +63,11 @@ def get_comprehensive_test_cases():
         ("999999999V", False, "All nines"),
         ("199900000V", False, "Day number 000 (invalid)"),
         ("000000000V", False, "All zeros"),
-        ("   199812345V   ", True, "Valid with leading/trailing spaces (should be stripped)"),
+        ("   981234567V   ", True, "Valid with leading/trailing spaces (should be stripped)"),
         
         # ===== BOUNDARY TESTING - DAY NUMBERS =====
         ("199800112V", False, "Day 001 in old format - should use 3 digits not 4"),
-        ("198536612V", False, "Day 366 in old format - wrong position"),
+        ("198536612V", True, "Day 853 in old format - valid female day (853-500=353)"),
         ("199886712V", False, "Day 867 (out of range) in old format - wrong position"),
         
         # ===== REAL-WORLD EXAMPLES (ANONYMIZED) =====

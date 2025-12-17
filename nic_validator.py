@@ -25,7 +25,7 @@ class NICValidatorDFA:
         # States
         self.states = {
             'q0', 'q1', 'q2', 'q3', 'q4', 'q5', 'q6', 
-            'q7', 'q8', 'q9', 'q10', 'q11', 'q12', 
+            'q7', 'q8', 'q9', 'q10', 'q11',
             'qAccept', 'qReject'
         }
         
@@ -93,13 +93,9 @@ class NICValidatorDFA:
         for d in digits:
             transitions[('q10', d)] = 'q11'
         
-        # q11 to q12: Eleventh digit (new format)
+        # q11 to qAccept: Eleventh digit (new format)
         for d in digits:
-            transitions[('q11', d)] = 'q12'
-        
-        # q12 to qAccept: Twelfth digit (new format completion)
-        for d in digits:
-            transitions[('q12', d)] = 'qAccept'
+            transitions[('q11', d)] = 'qAccept'
         
         return transitions
     
@@ -116,8 +112,15 @@ class NICValidatorDFA:
         if not nic:
             return (False, "Empty input", [])
         
-        # Convert to uppercase for V
-        nic = nic.strip().upper()
+        # Strip whitespace but preserve case for validation
+        nic = nic.strip()
+        
+        # Check for lowercase 'v' - only uppercase 'V' is valid
+        if 'v' in nic:
+            return (False, "Invalid character 'v' - only uppercase 'V' is allowed", [])
+        
+        # Now convert to uppercase for processing
+        nic = nic.upper()
         
         # Track the path through states
         path = [self.start_state]
@@ -150,6 +153,10 @@ class NICValidatorDFA:
         
         # Check if we ended in an accepting state
         if current_state in self.accept_states:
+            # Perform semantic validation for day numbers
+            if not self._validate_day_number(nic):
+                return (False, "Invalid day number (must be 001-366 for males, 501-866 for females)", path)
+            
             format_type = "Old Format (9 digits + V)" if nic[-1] == 'V' else "New Format (12 digits)"
             return (True, f"Valid NIC - {format_type}", path)
         else:
@@ -158,6 +165,34 @@ class NICValidatorDFA:
                 f"Incomplete NIC - ended in state {current_state}", 
                 path
             )
+    
+    def _validate_day_number(self, nic):
+        """
+        Validate the day number portion of the NIC.
+        
+        Args:
+            nic (str): The NIC number (already uppercase)
+            
+        Returns:
+            bool: True if day number is valid
+        """
+        try:
+            if nic[-1] == 'V':
+                # Old format: YY + DDD (positions 2-4 for day, 3 digits)
+                day_number = int(nic[2:5])
+            else:
+                # New format: YYYY + DDD (positions 4-6 for day, 3 digits)
+                day_number = int(nic[4:7])
+            
+            # Males: 001-366, Females: 501-866
+            if day_number >= 1 and day_number <= 366:
+                return True  # Male
+            elif day_number >= 501 and day_number <= 866:
+                return True  # Female
+            else:
+                return False
+        except:
+            return False
     
     def extract_info(self, nic):
         """
@@ -179,10 +214,10 @@ class NICValidatorDFA:
         
         # Determine format
         if nic[-1] == 'V':
-            # Old format: YYDDDDDDDDV
+            # Old format: YYDDDSSSSSV (YY=year, DDD=day, SSSSS=serial, V=suffix)
             info['format'] = 'Old'
             year_digits = nic[0:2]
-            day_number = int(nic[2:9])
+            day_number = int(nic[2:5])
             
             # Determine century (assume 1900s for 00-99)
             year = int(year_digits)
@@ -191,10 +226,10 @@ class NICValidatorDFA:
             else:
                 info['birth_year'] = 1900 + year
         else:
-            # New format: YYYYDDDDDDDDC
+            # New format: YYYYDDDSSSSS (YYYY=year, DDD=day, SSSSS=serial)
             info['format'] = 'New'
             info['birth_year'] = int(nic[0:4])
-            day_number = int(nic[4:11])
+            day_number = int(nic[4:7])
         
         # Determine gender and day of year
         if day_number > 500:
