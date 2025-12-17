@@ -1,6 +1,6 @@
 # Sri Lankan NIC Validator - DFA Implementation
 
-**Automata Theory - Make-Up Assignment**
+**Automata Theory**
 
 A Deterministic Finite Automaton (DFA) implementation for validating Sri Lankan National Identity Card (NIC) numbers.
 
@@ -179,35 +179,31 @@ ABCD12345V     ✗  Contains letters
 
 ---
 
-## 📝 Assignment Components
+## 📝 Project Components
 
 - [x] Python project with complete implementation
 - [x] State diagram and formal definition
 - [x] Test cases with ACCEPT/REJECT outcomes
 - [x] Code comments and documentation
-- [x] Interactive demonstration capability
-- [ ] Video demonstration (5-7 minutes)
-- [ ] Short report (2-3 pages)
 
 ---
 
 ## 🤝 Contributing
 
-This is an academic assignment project. For educational purposes only.
+This is an academic project. For educational purposes only.
 
 ---
 
 ## 📄 License
 
-Educational use only - Automata Theory Assignment 2025
+Educational use only - Automata Theory
 
 ---
 
 ## 👨‍💻 Author
 
 **Dilini Kodituwakku**  
-Automata Theory Course  
-December 2025
+Automata Theory
 
 ---
 
